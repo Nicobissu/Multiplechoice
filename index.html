@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test interactivo de Frontend</title>
+  <style>
+    :root {
+      --bg-gradient-start: #f5f7ff;
+      --bg-gradient-end: #dfe7fd;
+      --card-bg: #ffffff;
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e2e8f0;
+      --success: #22c55e;
+      --success-bg: #ecfdf5;
+      --error: #ef4444;
+      --error-bg: #fee2e2;
+      --shadow: 0 20px 45px -35px rgba(79, 70, 229, 0.65);
+      --shadow-strong: 0 24px 54px -30px rgba(79, 70, 229, 0.35);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100%;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+    }
+
+    main.app {
+      width: min(1100px, 95vw);
+      padding: 2.5rem 1.25rem 3rem;
+    }
+
+    .app-header {
+      text-align: center;
+      margin-bottom: 2.25rem;
+    }
+
+    .app-header h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+      letter-spacing: -0.02em;
+    }
+
+    .app-header p {
+      margin: 0.75rem auto 0;
+      max-width: 640px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .layout {
+      display: flex;
+      gap: 1.75rem;
+      align-items: flex-start;
+    }
+
+    .summary-panel {
+      flex: 0 0 240px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(6px);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 1.5rem;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 1.5rem;
+    }
+
+    .summary-panel h2 {
+      margin: 0 0 1rem;
+      font-size: 1.1rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .summary-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+      gap: 0.65rem;
+    }
+
+    .summary-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 0.65rem 0;
+      background: #eef2ff;
+      color: var(--primary-dark);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      box-shadow: 0 12px 24px -18px rgba(79, 70, 229, 0.65);
+    }
+
+    .summary-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .summary-btn:focus-visible {
+      outline: 3px solid rgba(99, 102, 241, 0.35);
+      outline-offset: 2px;
+    }
+
+    .summary-btn.is-active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 18px 32px -20px rgba(79, 70, 229, 0.7);
+      transform: translateY(-1px);
+    }
+
+    .summary-btn.is-correct {
+      background: rgba(34, 197, 94, 0.15);
+      color: #047857;
+    }
+
+    .summary-btn.is-incorrect {
+      background: rgba(239, 68, 68, 0.15);
+      color: #b91c1c;
+    }
+
+    .summary-btn.is-active.is-correct,
+    .summary-btn.is-active.is-incorrect {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .question-card {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-strong);
+      padding: 2rem 2.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .question-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .question-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .chip {
+      background: rgba(99, 102, 241, 0.12);
+      color: var(--primary-dark);
+      border-radius: 999px;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .counter {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .question-title {
+      margin: 0;
+      font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+      line-height: 1.4;
+    }
+
+    .question-helper {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .options-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .option-card {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      box-shadow: 0 14px 36px -28px rgba(15, 23, 42, 0.3);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease, background 0.2s ease;
+      min-height: 64px;
+    }
+
+    .option-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 40px -26px rgba(79, 70, 229, 0.45);
+    }
+
+    .option-card:focus-within {
+      outline: 3px solid rgba(99, 102, 241, 0.3);
+      outline-offset: 2px;
+    }
+
+    .option-card.is-locked {
+      cursor: default;
+      pointer-events: none;
+      opacity: 0.92;
+    }
+
+    .option-card input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .option-indicator {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      margin-top: 0.1rem;
+      flex-shrink: 0;
+      transition: border 0.2s ease, background 0.2s ease;
+    }
+
+    .option-card--multi .option-indicator {
+      border-radius: 8px;
+    }
+
+    .option-indicator::after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+      transform: scale(0);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      opacity: 0;
+    }
+
+    .option-card--multi .option-indicator::after {
+      content: "✓";
+      width: auto;
+      height: auto;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.75rem;
+      transform: scale(0);
+    }
+
+    .option-card input:checked + .option-indicator {
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+
+    .option-card input:checked + .option-indicator::after {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .option-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      color: var(--text);
+    }
+
+    .option-main {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .option-sub {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .option-card.is-correct {
+      border-color: var(--success);
+      background: var(--success-bg);
+      box-shadow: 0 18px 45px -30px rgba(34, 197, 94, 0.45);
+    }
+
+    .option-card.is-incorrect {
+      border-color: var(--error);
+      background: var(--error-bg);
+      box-shadow: 0 18px 45px -30px rgba(239, 68, 68, 0.35);
+    }
+
+    .option-card.show-correct:not(.is-correct) {
+      border-style: dashed;
+      border-color: rgba(34, 197, 94, 0.8);
+      background: #f1fdf3;
+    }
+
+    .option-card.is-incorrect .option-indicator,
+    .option-card.is-incorrect input:checked + .option-indicator {
+      border-color: var(--error);
+      background: var(--error);
+    }
+
+    .option-card.is-correct .option-indicator,
+    .option-card.is-correct input:checked + .option-indicator {
+      border-color: var(--success);
+      background: var(--success);
+    }
+
+    .match-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1rem;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.9rem 1.15rem;
+      box-shadow: 0 14px 36px -28px rgba(15, 23, 42, 0.28);
+      transition: border 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .match-row select {
+      flex: 1;
+      min-width: 220px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.55rem 0.65rem;
+      font-size: 0.95rem;
+      color: var(--text);
+      background: #f8fafc;
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .match-row select:focus-visible {
+      outline: 3px solid rgba(99, 102, 241, 0.28);
+      outline-offset: 2px;
+      border-color: var(--primary);
+    }
+
+    .match-term {
+      font-weight: 600;
+      color: var(--text);
+      min-width: 130px;
+    }
+
+    .match-answer {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-left: auto;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+    }
+
+    .match-row.show-answer .match-answer {
+      opacity: 1;
+      transform: translateY(0);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .match-row.is-correct {
+      border-color: var(--success);
+      background: var(--success-bg);
+      box-shadow: 0 18px 45px -32px rgba(34, 197, 94, 0.45);
+    }
+
+    .match-row.is-incorrect {
+      border-color: var(--error);
+      background: var(--error-bg);
+      box-shadow: 0 18px 45px -32px rgba(239, 68, 68, 0.35);
+    }
+
+    .feedback-area {
+      border-top: 1px solid rgba(148, 163, 184, 0.2);
+      padding-top: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-height: 92px;
+    }
+
+    .feedback-message {
+      margin: 0;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .feedback-message.success {
+      color: #047857;
+    }
+
+    .feedback-message.error {
+      color: #b91c1c;
+    }
+
+    .correct-answer,
+    .explanation-text {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .explanation-text {
+      color: #475569;
+    }
+
+    .question-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .retry-btn {
+      background: rgba(99, 102, 241, 0.12);
+      color: var(--primary-dark);
+      border: none;
+      border-radius: 999px;
+      padding: 0.6rem 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .retry-btn:hover {
+      background: rgba(99, 102, 241, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .retry-btn:disabled,
+    .retry-btn[hidden] {
+      display: none;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .nav-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      background: var(--primary);
+      color: #ffffff;
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 18px 40px -28px rgba(79, 70, 229, 0.7);
+    }
+
+    .nav-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .nav-btn:disabled {
+      background: rgba(99, 102, 241, 0.25);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    button:focus-visible {
+      outline: 3px solid rgba(99, 102, 241, 0.4);
+      outline-offset: 2px;
+    }
+
+    .results-card {
+      margin-top: 2.5rem;
+      background: rgba(255, 255, 255, 0.92);
+      padding: 2rem;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .results-card h2 {
+      margin: 0;
+      letter-spacing: 0.02em;
+    }
+
+    .score-line {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .score-percentage {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--primary-dark);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-self: center;
+      align-items: center;
+      justify-content: center;
+      padding: 0.45rem 1.25rem;
+      background: rgba(99, 102, 241, 0.18);
+      color: var(--primary-dark);
+      border-radius: 999px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .resume-note {
+      margin: 0.75rem 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .summary-panel {
+        width: 100%;
+        position: static;
+        order: 2;
+      }
+
+      .question-card {
+        order: 1;
+        padding: 1.75rem 1.5rem;
+      }
+
+      .match-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .match-row select {
+        width: 100%;
+      }
+
+      .match-answer {
+        margin-left: 0;
+      }
+    }
+
+    @media (max-width: 600px) {
+      main.app {
+        width: 100%;
+        padding: 1.75rem 1rem 2.5rem;
+      }
+
+      .summary-buttons {
+        grid-template-columns: repeat(auto-fit, minmax(56px, 1fr));
+      }
+
+      .question-card {
+        padding: 1.5rem 1.2rem;
+      }
+
+      .nav-buttons {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .nav-btn {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="app-header">
+      <h1>Evaluación interactiva de desarrollo frontend</h1>
+      <p>Respondé las preguntas y obtené retroalimentación inmediata. Podés navegar por el resumen, y tu progreso se guardará automáticamente en este dispositivo.</p>
+    </header>
+    <div class="layout">
+      <aside class="summary-panel" aria-label="Resumen de preguntas">
+        <h2>Resumen</h2>
+        <div class="summary-buttons" id="summaryButtons"></div>
+      </aside>
+      <section class="question-card" id="questionCard" aria-live="polite">
+        <div id="questionContent"></div>
+        <div class="question-footer">
+          <button type="button" class="retry-btn" id="retryButton" hidden>Reintentar</button>
+          <div class="nav-buttons">
+            <button type="button" class="nav-btn" id="prevBtn">Anterior</button>
+            <button type="button" class="nav-btn" id="nextBtn">Siguiente</button>
+          </div>
+        </div>
+      </section>
+    </div>
+    <section class="results-card" id="resultsCard" aria-live="polite">
+      <h2>Resultados</h2>
+      <p class="score-line"><span id="scoreCount">0 / 0</span> respuestas correctas</p>
+      <p class="score-percentage" id="scorePercentage">0%</p>
+      <span class="badge" id="scoreBadge">A seguir</span>
+      <p class="resume-note">Tus respuestas quedan guardadas localmente para que puedas continuar más tarde.</p>
+    </section>
+  </main>
+  <script>
+    const questions = [
+      {
+        id: 'q1',
+        type: 'single',
+        title: '¿Qué etiqueta HTML semántica representa el contenido principal de una página?',
+        helper: 'Elegí la opción correcta.',
+        options: [
+          { value: 'div', label: '<div>' },
+          { value: 'main', label: '<main>' },
+          { value: 'section', label: '<section>' },
+          { value: 'article', label: '<article>' }
+        ],
+        correct: ['main'],
+        explanation: 'La etiqueta <main> describe el contenido central del documento. Ayuda a los lectores de pantalla a saltar directamente al contenido principal y mejora la estructura semántica.'
+      },
+      {
+        id: 'q2',
+        type: 'multi',
+        title: '¿Qué prácticas mejoran la accesibilidad de una interfaz web?',
+        helper: 'Podés elegir más de una opción. La corrección se mostrará automáticamente un instante después de tu última selección.',
+        options: [
+          { value: 'contrast', label: 'Mantener un contraste suficiente entre el texto y el fondo.' },
+          { value: 'semanticless', label: 'Usar únicamente contenedores <div> sin etiquetas semánticas.' },
+          { value: 'labels', label: 'Asociar etiquetas <label> con sus controles de formulario.' },
+          { value: 'coloronly', label: 'Comunicar estados solo mediante el color.' }
+        ],
+        correct: ['contrast', 'labels'],
+        explanation: 'Un contraste adecuado y las etiquetas asociadas permiten que más personas perciban y comprendan la interfaz. Depender solo de <div> o del color dificulta el uso con tecnologías de asistencia.'
+      },
+      {
+        id: 'q3',
+        type: 'tf',
+        title: 'Las media queries de CSS permiten adaptar los estilos a distintos tamaños de pantalla.',
+        helper: 'Seleccioná Verdadero o Falso.',
+        options: [
+          { value: 'true', label: 'Verdadero' },
+          { value: 'false', label: 'Falso' }
+        ],
+        correct: ['true'],
+        explanation: 'Las media queries consultan las características del dispositivo (como el ancho de la pantalla) y permiten definir estilos específicos para cada caso, haciendo el diseño responsive.'
+      },
+      {
+        id: 'q4',
+        type: 'match',
+        title: 'Emparejá cada técnica de rendimiento con su descripción.',
+        helper: 'Elegí una definición para cada concepto.',
+        pairs: [
+          {
+            left: 'Lazy loading',
+            options: [
+              { value: 'defer', label: 'Cargar recursos solo cuando realmente son necesarios.' },
+              { value: 'cache', label: 'Almacenar archivos en el navegador para futuras visitas.' },
+              { value: 'minify', label: 'Eliminar espacios y caracteres innecesarios del código.' }
+            ],
+            correct: 'defer'
+          },
+          {
+            left: 'Caching',
+            options: [
+              { value: 'compress', label: 'Comprimir recursos estáticos para reducir su peso.' },
+              { value: 'cache', label: 'Almacenar archivos en el navegador para futuras visitas.' },
+              { value: 'defer', label: 'Cargar recursos solo cuando realmente son necesarios.' }
+            ],
+            correct: 'cache'
+          },
+          {
+            left: 'Minificación',
+            options: [
+              { value: 'minify', label: 'Eliminar espacios y caracteres innecesarios del código.' },
+              { value: 'compress', label: 'Comprimir recursos estáticos para reducir su peso.' },
+              { value: 'cache', label: 'Almacenar archivos en el navegador para futuras visitas.' }
+            ],
+            correct: 'minify'
+          }
+        ],
+        explanation: 'Cada técnica aborda un aspecto diferente del rendimiento: el lazy loading retrasa la carga, el caching guarda recursos ya descargados y la minificación reduce el tamaño del código.'
+      }
+    ];
+
+    const typeLabels = {
+      single: 'Selección única',
+      multi: 'Selección múltiple',
+      tf: 'Verdadero / Falso',
+      match: 'Emparejar'
+    };
+
+    const storageKey = 'modernFrontendQuiz_v1';
+    let state = loadState();
+    const multiDelayTimers = new Map();
+
+    const summaryContainer = document.getElementById('summaryButtons');
+    const questionContent = document.getElementById('questionContent');
+    const retryButton = document.getElementById('retryButton');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const scoreCountEl = document.getElementById('scoreCount');
+    const scorePercentageEl = document.getElementById('scorePercentage');
+    const scoreBadgeEl = document.getElementById('scoreBadge');
+
+    prevBtn.addEventListener('click', () => {
+      goToQuestion(state.currentIndex - 1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (state.currentIndex >= questions.length - 1) {
+        document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      goToQuestion(state.currentIndex + 1);
+    });
+
+    retryButton.addEventListener('click', () => {
+      const question = questions[state.currentIndex];
+      clearMultiTimer(question.id);
+      delete state.answers[question.id];
+      delete state.evaluations[question.id];
+      saveState();
+      renderQuestion();
+      renderSummary();
+      updateResults();
+    });
+
+    init();
+
+    function init() {
+      renderSummary();
+      renderQuestion();
+      updateResults();
+    }
+
+    function loadState() {
+      const defaultState = {
+        currentIndex: 0,
+        answers: {},
+        evaluations: {}
+      };
+
+      try {
+        const stored = localStorage.getItem(storageKey);
+        if (!stored) {
+          return defaultState;
+        }
+        const parsed = JSON.parse(stored);
+        return {
+          currentIndex: clampIndex(parsed.currentIndex ?? 0),
+          answers: parsed.answers ?? {},
+          evaluations: parsed.evaluations ?? {}
+        };
+      } catch (error) {
+        console.warn('No se pudo recuperar el estado guardado:', error);
+        return defaultState;
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(state));
+      } catch (error) {
+        console.warn('No se pudo guardar el progreso:', error);
+      }
+    }
+
+    function clampIndex(index) {
+      if (typeof index !== 'number' || Number.isNaN(index)) {
+        return 0;
+      }
+      return Math.min(Math.max(index, 0), questions.length - 1);
+    }
+
+    function goToQuestion(index) {
+      state.currentIndex = clampIndex(index);
+      saveState();
+      renderQuestion();
+      renderSummary();
+    }
+
+    function renderSummary() {
+      summaryContainer.innerHTML = '';
+      questions.forEach((question, idx) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'summary-btn';
+        button.textContent = idx + 1;
+        const evaluation = state.evaluations[question.id];
+        if (evaluation?.isCorrect) {
+          button.classList.add('is-correct');
+        } else if (evaluation && !evaluation.isCorrect) {
+          button.classList.add('is-incorrect');
+        }
+        if (state.currentIndex === idx) {
+          button.classList.add('is-active');
+        }
+        button.setAttribute('aria-label', `Ir a la pregunta ${idx + 1}`);
+        button.addEventListener('click', () => {
+          goToQuestion(idx);
+        });
+        summaryContainer.appendChild(button);
+      });
+    }
+
+    function renderQuestion() {
+      clearMultiTimer(questions[state.currentIndex]?.id);
+      const question = questions[state.currentIndex];
+      if (!question) return;
+
+      questionContent.innerHTML = '';
+      const titleId = `${question.id}-title`;
+      const helperId = question.helper ? `${question.id}-helper` : undefined;
+      const evaluation = state.evaluations[question.id];
+      const storedAnswer = state.answers[question.id];
+      const isLocked = Boolean(evaluation);
+
+      const header = document.createElement('div');
+      header.className = 'question-header';
+      header.innerHTML = `
+        <div class="question-meta">
+          <span class="chip">${typeLabels[question.type] ?? 'Pregunta'}</span>
+          <span class="counter">Pregunta ${state.currentIndex + 1} de ${questions.length}</span>
+        </div>
+        <h2 class="question-title" id="${titleId}">${question.title}</h2>
+        ${question.helper ? `<p class="question-helper" id="${helperId}">${question.helper}</p>` : ''}
+      `;
+      questionContent.appendChild(header);
+
+      const optionsWrapper = document.createElement('div');
+      optionsWrapper.className = 'options-wrapper';
+      const role = question.type === 'single' || question.type === 'tf' ? 'radiogroup' : 'group';
+      optionsWrapper.setAttribute('role', role);
+      optionsWrapper.setAttribute('aria-labelledby', titleId);
+      if (helperId) {
+        optionsWrapper.setAttribute('aria-describedby', helperId);
+      }
+      questionContent.appendChild(optionsWrapper);
+
+      if (question.type === 'match') {
+        question.pairs.forEach(pair => {
+          const row = document.createElement('div');
+          row.className = 'match-row';
+          row.dataset.left = pair.left;
+
+          const label = document.createElement('span');
+          label.className = 'match-term';
+          label.textContent = pair.left;
+
+          const select = document.createElement('select');
+          select.dataset.left = pair.left;
+          const placeholderOption = document.createElement('option');
+          placeholderOption.value = '';
+          placeholderOption.textContent = 'Seleccioná una opción';
+          select.appendChild(placeholderOption);
+
+          pair.options.forEach(option => {
+            const optEl = document.createElement('option');
+            optEl.value = option.value;
+            optEl.textContent = option.label;
+            select.appendChild(optEl);
+          });
+
+          if (storedAnswer && storedAnswer[pair.left]) {
+            select.value = storedAnswer[pair.left];
+          }
+          if (isLocked) {
+            select.disabled = true;
+          }
+
+          const helper = document.createElement('span');
+          helper.className = 'match-answer';
+          helper.setAttribute('aria-hidden', 'true');
+
+          row.append(label, select, helper);
+          optionsWrapper.appendChild(row);
+
+          if (!isLocked) {
+            select.addEventListener('change', () => {
+              const answer = collectMatchAnswer();
+              if (!answer) {
+                return;
+              }
+              applyEvaluation(question, answer);
+            });
+          }
+        });
+      } else {
+        const isMulti = question.type === 'multi';
+        question.options.forEach(option => {
+          const label = document.createElement('label');
+          label.className = 'option-card option-card--' + question.type;
+          label.dataset.value = option.value;
+
+          const input = document.createElement('input');
+          input.type = isMulti ? 'checkbox' : 'radio';
+          input.name = question.id;
+          input.value = option.value;
+          if (isMulti && Array.isArray(storedAnswer) && storedAnswer.includes(option.value)) {
+            input.checked = true;
+          }
+          if (!isMulti && storedAnswer === option.value) {
+            input.checked = true;
+          }
+          if (isLocked) {
+            input.disabled = true;
+            label.classList.add('is-locked');
+          }
+
+          const indicator = document.createElement('span');
+          indicator.className = 'option-indicator';
+
+          const textWrapper = document.createElement('span');
+          textWrapper.className = 'option-text';
+          const mainText = document.createElement('span');
+          mainText.className = 'option-main';
+          mainText.textContent = option.label;
+          textWrapper.appendChild(mainText);
+
+          label.append(input, indicator, textWrapper);
+          optionsWrapper.appendChild(label);
+
+          if (!isLocked) {
+            if (isMulti) {
+              input.addEventListener('change', () => {
+                const selectedValues = collectMultiAnswer(question.id);
+                if (!selectedValues || selectedValues.length === 0) {
+                  clearMultiTimer(question.id);
+                  return;
+                }
+                clearMultiTimer(question.id);
+                const timer = setTimeout(() => {
+                  applyEvaluation(question, selectedValues);
+                }, 900);
+                multiDelayTimers.set(question.id, timer);
+              });
+            } else {
+              input.addEventListener('change', () => {
+                applyEvaluation(question, option.value);
+              });
+            }
+          }
+        });
+      }
+
+      const feedback = document.createElement('div');
+      feedback.className = 'feedback-area';
+      feedback.innerHTML = `
+        <p class="feedback-message" id="feedbackMessage" role="status" aria-live="polite"></p>
+        <p class="correct-answer" id="correctAnswer"></p>
+        <p class="explanation-text" id="explanationText"></p>
+      `;
+      questionContent.appendChild(feedback);
+
+      if (evaluation && storedAnswer !== undefined) {
+        showCorrection(question, evaluation, storedAnswer);
+        updateFeedbackUI(question, evaluation);
+      } else {
+        updateFeedbackUI(question, null);
+      }
+
+      toggleRetryButton(isLocked);
+      updateNavigation();
+    }
+
+    function applyEvaluation(question, rawAnswer) {
+      const storedAnswer = cloneAnswer(question, rawAnswer);
+      const evaluation = evaluateQuestion(question, storedAnswer);
+
+      state.answers[question.id] = storedAnswer;
+      state.evaluations[question.id] = evaluation;
+      saveState();
+      clearMultiTimer(question.id);
+
+      showCorrection(question, evaluation, storedAnswer);
+      updateFeedbackUI(question, evaluation);
+      toggleRetryButton(true);
+      renderSummary();
+      updateResults();
+    }
+
+    function cloneAnswer(question, answer) {
+      if (question.type === 'multi') {
+        return Array.isArray(answer) ? [...answer] : [];
+      }
+      if (question.type === 'match') {
+        return answer ? { ...answer } : {};
+      }
+      return typeof answer === 'string' ? answer : null;
+    }
+
+    function evaluateQuestion(question, userAnswer) {
+      let isCorrect = false;
+      let correctAnswers;
+
+      switch (question.type) {
+        case 'single':
+        case 'tf': {
+          const correctValue = Array.isArray(question.correct) ? question.correct[0] : question.correct;
+          isCorrect = userAnswer === correctValue;
+          correctAnswers = Array.isArray(question.correct) ? [...question.correct] : [question.correct];
+          break;
+        }
+        case 'multi': {
+          const expected = Array.isArray(question.correct) ? [...question.correct].sort() : [];
+          const received = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
+          isCorrect = expected.length === received.length && expected.every((value, idx) => value === received[idx]);
+          correctAnswers = expected;
+          break;
+        }
+        case 'match': {
+          correctAnswers = question.pairs.map(pair => ({ left: pair.left, value: pair.correct }));
+          const provided = userAnswer || {};
+          isCorrect = question.pairs.every(pair => provided[pair.left] === pair.correct);
+          break;
+        }
+        default:
+          correctAnswers = [];
+      }
+
+      return {
+        isCorrect,
+        correctAnswers,
+        explanation: question.explanation
+      };
+    }
+
+    function showCorrection(question, evaluation, userAnswer) {
+      const correctAnswers = evaluation.correctAnswers;
+      if (question.type === 'match') {
+        const rows = questionContent.querySelectorAll('.match-row');
+        rows.forEach(row => {
+          const key = row.dataset.left;
+          const select = row.querySelector('select');
+          const helper = row.querySelector('.match-answer');
+          const expected = correctAnswers.find(item => item.left === key);
+          if (select) {
+            select.disabled = true;
+          }
+          if (helper && expected) {
+            helper.textContent = `Correcta: ${getMatchLabel(question, key, expected.value)}`;
+            row.classList.add('show-answer');
+          }
+          if (userAnswer && userAnswer[key] === expected?.value) {
+            row.classList.add('is-correct');
+          } else {
+            row.classList.add('is-incorrect');
+          }
+        });
+      } else {
+        const selectedValues = Array.isArray(userAnswer) ? userAnswer : userAnswer ? [userAnswer] : [];
+        const cards = questionContent.querySelectorAll('.option-card');
+        cards.forEach(card => {
+          const value = card.dataset.value;
+          const input = card.querySelector('input');
+          if (input) {
+            input.disabled = true;
+          }
+          card.classList.add('is-locked');
+          if (selectedValues.includes(value)) {
+            card.classList.add(correctAnswers.includes(value) ? 'is-correct' : 'is-incorrect');
+          }
+          if (correctAnswers.includes(value)) {
+            card.classList.add('show-correct');
+          }
+        });
+      }
+    }
+
+    function updateFeedbackUI(question, evaluation) {
+      const feedbackMessage = document.getElementById('feedbackMessage');
+      const correctAnswerEl = document.getElementById('correctAnswer');
+      const explanationEl = document.getElementById('explanationText');
+      if (!feedbackMessage || !correctAnswerEl || !explanationEl) return;
+
+      if (!evaluation) {
+        feedbackMessage.textContent = 'Seleccioná una respuesta para ver si es correcta.';
+        feedbackMessage.className = 'feedback-message';
+        correctAnswerEl.textContent = '';
+        explanationEl.textContent = '';
+        return;
+      }
+
+      feedbackMessage.textContent = evaluation.isCorrect ? '¡Correcto!' : 'Respuesta incorrecta';
+      feedbackMessage.className = 'feedback-message ' + (evaluation.isCorrect ? 'success' : 'error');
+      correctAnswerEl.textContent = 'Respuesta correcta: ' + formatCorrectAnswer(question, evaluation);
+      explanationEl.textContent = evaluation.explanation;
+    }
+
+    function toggleRetryButton(show) {
+      if (show) {
+        retryButton.hidden = false;
+        retryButton.disabled = false;
+      } else {
+        retryButton.hidden = true;
+        retryButton.disabled = true;
+      }
+    }
+
+    function updateNavigation() {
+      prevBtn.disabled = state.currentIndex === 0;
+      nextBtn.textContent = state.currentIndex === questions.length - 1 ? 'Ver resultados' : 'Siguiente';
+    }
+
+    function updateResults() {
+      const evaluations = Object.values(state.evaluations);
+      const correctCount = evaluations.filter(entry => entry?.isCorrect).length;
+      const total = questions.length;
+      const percentage = total === 0 ? 0 : Math.round((correctCount / total) * 100);
+
+      scoreCountEl.textContent = `${correctCount} / ${total}`;
+      scorePercentageEl.textContent = `${percentage}%`;
+      scoreBadgeEl.textContent = getBadgeLabel(percentage);
+    }
+
+    function getBadgeLabel(percentage) {
+      if (percentage >= 90) return 'Excelente';
+      if (percentage >= 75) return 'Muy bien';
+      return 'A seguir';
+    }
+
+    function formatCorrectAnswer(question, evaluation) {
+      if (question.type === 'match') {
+        return evaluation.correctAnswers
+          .map(item => `${item.left} → ${getMatchLabel(question, item.left, item.value)}`)
+          .join('; ');
+      }
+      const optionMap = new Map();
+      if (Array.isArray(question.options)) {
+        question.options.forEach(option => {
+          optionMap.set(option.value, option.label);
+        });
+      }
+      return evaluation.correctAnswers
+        .map(value => optionMap.get(value) ?? value)
+        .join(', ');
+    }
+
+    function getMatchLabel(question, left, value) {
+      const pair = question.pairs.find(item => item.left === left);
+      if (!pair) return value;
+      const option = pair.options.find(opt => opt.value === value);
+      return option ? option.label : value;
+    }
+
+    function collectMultiAnswer(questionId) {
+      return Array.from(document.querySelectorAll(`input[name="${questionId}"]:checked`)).map(input => input.value);
+    }
+
+    function collectMatchAnswer() {
+      const rows = questionContent.querySelectorAll('.match-row');
+      const answer = {};
+      let filled = true;
+      rows.forEach(row => {
+        const select = row.querySelector('select');
+        const key = select?.dataset.left;
+        if (!key) return;
+        if (!select.value) {
+          filled = false;
+        }
+        answer[key] = select.value || null;
+      });
+      return filled ? answer : null;
+    }
+
+    function clearMultiTimer(questionId) {
+      if (!questionId) return;
+      if (multiDelayTimers.has(questionId)) {
+        clearTimeout(multiDelayTimers.get(questionId));
+        multiDelayTimers.delete(questionId);
+      }
+    }
+  </script>
+</body>
+</html>
