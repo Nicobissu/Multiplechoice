@@ -479,6 +479,10 @@
       color: #b91c1c;
     }
 
+    .feedback-message.warning {
+      color: #b45309;
+    }
+
     .correct-answer,
     .explanation-text {
       margin: 0;
@@ -547,6 +551,25 @@
       background: rgba(99, 102, 241, 0.25);
       cursor: not-allowed;
       box-shadow: none;
+    }
+
+    .reset-btn {
+      margin-top: 1rem;
+      align-self: center;
+      border: none;
+      border-radius: 999px;
+      padding: 0.65rem 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      background: rgba(99, 102, 241, 0.18);
+      color: var(--primary-dark);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .reset-btn:hover {
+      background: rgba(99, 102, 241, 0.28);
+      transform: translateY(-1px);
     }
 
     button:focus-visible {
@@ -695,6 +718,7 @@
       <p class="score-percentage" id="scorePercentage">0%</p>
       <span class="badge" id="scoreBadge">A seguir</span>
       <p class="resume-note">Tus respuestas quedan guardadas localmente para que puedas continuar más tarde.</p>
+      <button type="button" class="reset-btn" id="resetBtn">Reiniciar evaluación</button>
     </section>
   </main>
   <script>
@@ -1136,13 +1160,13 @@
 
     const storageKey = 'thermoEngineeringQuiz_v1';
     let state = loadState();
-    const multiDelayTimers = new Map();
 
     const summaryContainer = document.getElementById('summaryButtons');
     const questionContent = document.getElementById('questionContent');
     const retryButton = document.getElementById('retryButton');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
+    const resetBtn = document.getElementById('resetBtn');
     const scoreCountEl = document.getElementById('scoreCount');
     const scorePercentageEl = document.getElementById('scorePercentage');
     const scoreBadgeEl = document.getElementById('scoreBadge');
@@ -1152,16 +1176,33 @@
     });
 
     nextBtn.addEventListener('click', () => {
-      if (state.currentIndex >= questions.length - 1) {
+      const question = questions[state.currentIndex];
+      if (!question) {
+        return;
+      }
+
+      const mode = nextBtn.dataset.mode ?? 'check';
+
+      if (mode === 'check') {
+        const answer = collectCurrentAnswer(question, true);
+        if (answer === null) {
+          showIncompleteAnswerMessage();
+          return;
+        }
+        applyEvaluation(question, answer);
+        return;
+      }
+
+      if (mode === 'results') {
         document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
+
       goToQuestion(state.currentIndex + 1);
     });
 
     retryButton.addEventListener('click', () => {
       const question = questions[state.currentIndex];
-      clearMultiTimer(question.id);
       delete state.answers[question.id];
       delete state.evaluations[question.id];
       saveState();
@@ -1169,6 +1210,12 @@
       renderSummary();
       updateResults();
     });
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        resetQuiz();
+      });
+    }
 
     function normalizeQuestions(rawQuestions) {
       return rawQuestions.map((raw, index) => {
@@ -1321,6 +1368,22 @@
       }
     }
 
+    function resetQuiz() {
+      state = {
+        currentIndex: 0,
+        answers: {},
+        evaluations: {}
+      };
+      saveState();
+      renderSummary();
+      renderQuestion();
+      updateResults();
+      const main = document.querySelector('main.app');
+      if (main) {
+        main.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
     function clampIndex(index) {
       if (typeof index !== 'number' || Number.isNaN(index)) {
         return 0;
@@ -1360,7 +1423,6 @@
     }
 
     function renderQuestion() {
-      clearMultiTimer(questions[state.currentIndex]?.id);
       const question = questions[state.currentIndex];
       if (!question) return;
 
@@ -1436,11 +1498,11 @@
 
           if (!isLocked) {
             select.addEventListener('change', () => {
-              const answer = collectMatchAnswer();
-              if (!answer) {
-                return;
+              const answer = collectMatchAnswer(false);
+              recordAnswer(question, answer);
+              if (!state.evaluations[question.id]) {
+                updateFeedbackUI(question, null);
               }
-              applyEvaluation(question, answer);
             });
           }
         });
@@ -1483,11 +1545,11 @@
             if (!isLocked) {
               input.addEventListener('change', () => {
                 updateGroupTfOptionState(controls);
-                const answer = collectGroupTfAnswer(question);
-                if (!answer) {
-                  return;
+                const answer = collectGroupTfAnswer(question, false);
+                recordAnswer(question, answer);
+                if (!state.evaluations[question.id]) {
+                  updateFeedbackUI(question, null);
                 }
-                applyEvaluation(question, answer);
               });
             }
           });
@@ -1544,19 +1606,19 @@
             if (isMulti) {
               input.addEventListener('change', () => {
                 const selectedValues = collectMultiAnswer(question.id);
-                if (!selectedValues || selectedValues.length === 0) {
-                  clearMultiTimer(question.id);
-                  return;
+                recordAnswer(question, selectedValues);
+                if (!state.evaluations[question.id]) {
+                  updateFeedbackUI(question, null);
                 }
-                clearMultiTimer(question.id);
-                const timer = setTimeout(() => {
-                  applyEvaluation(question, selectedValues);
-                }, 900);
-                multiDelayTimers.set(question.id, timer);
               });
             } else {
               input.addEventListener('change', () => {
-                applyEvaluation(question, option.value);
+                if (input.checked) {
+                  recordAnswer(question, option.value);
+                  if (!state.evaluations[question.id]) {
+                    updateFeedbackUI(question, null);
+                  }
+                }
               });
             }
           }
@@ -1584,19 +1646,46 @@
     }
 
     function applyEvaluation(question, rawAnswer) {
+      if (!question) return;
       const storedAnswer = cloneAnswer(question, rawAnswer);
       const evaluation = evaluateQuestion(question, storedAnswer);
 
       state.answers[question.id] = storedAnswer;
       state.evaluations[question.id] = evaluation;
       saveState();
-      clearMultiTimer(question.id);
 
       showCorrection(question, evaluation, storedAnswer);
       updateFeedbackUI(question, evaluation);
       toggleRetryButton(true);
       renderSummary();
       updateResults();
+      updateNavigation();
+    }
+
+    function recordAnswer(question, answer) {
+      if (!question) return;
+      const key = question.id;
+
+      if (answer === null) {
+        delete state.answers[key];
+        saveState();
+        return;
+      }
+
+      let shouldStore = true;
+      if (Array.isArray(answer)) {
+        shouldStore = answer.some(value => value !== null && value !== undefined && value !== '');
+      } else if (typeof answer === 'object') {
+        const values = Object.values(answer ?? {});
+        shouldStore = values.some(value => value !== null && value !== undefined && value !== '');
+      }
+
+      if (!shouldStore) {
+        delete state.answers[key];
+      } else {
+        state.answers[key] = cloneAnswer(question, answer);
+      }
+      saveState();
     }
 
     function cloneAnswer(question, answer) {
@@ -1755,17 +1844,31 @@
       if (!feedbackMessage || !correctAnswerEl || !explanationEl) return;
 
       if (!evaluation) {
-        feedbackMessage.textContent = 'Seleccioná una respuesta para ver si es correcta.';
+        feedbackMessage.textContent = 'Seleccioná una respuesta y presioná "Siguiente" para corregirla.';
         feedbackMessage.className = 'feedback-message';
         correctAnswerEl.textContent = '';
         explanationEl.textContent = '';
         return;
       }
 
-      feedbackMessage.textContent = evaluation.isCorrect ? '¡Correcto!' : 'Respuesta incorrecta';
+      feedbackMessage.textContent = evaluation.isCorrect
+        ? '¡Correcto! Podés avanzar con "Siguiente".'
+        : 'Respuesta incorrecta. Revisá la explicación y luego presioná "Siguiente" para continuar.';
       feedbackMessage.className = 'feedback-message ' + (evaluation.isCorrect ? 'success' : 'error');
       correctAnswerEl.textContent = 'Respuesta correcta: ' + formatCorrectAnswer(question, evaluation);
       explanationEl.textContent = evaluation.explanation;
+    }
+
+    function showIncompleteAnswerMessage() {
+      const feedbackMessage = document.getElementById('feedbackMessage');
+      const correctAnswerEl = document.getElementById('correctAnswer');
+      const explanationEl = document.getElementById('explanationText');
+      if (!feedbackMessage || !correctAnswerEl || !explanationEl) return;
+
+      feedbackMessage.textContent = 'Completá la respuesta antes de continuar.';
+      feedbackMessage.className = 'feedback-message warning';
+      correctAnswerEl.textContent = '';
+      explanationEl.textContent = '';
     }
 
     function toggleRetryButton(show) {
@@ -1780,7 +1883,27 @@
 
     function updateNavigation() {
       prevBtn.disabled = state.currentIndex === 0;
-      nextBtn.textContent = state.currentIndex === questions.length - 1 ? 'Ver resultados' : 'Siguiente';
+      const question = questions[state.currentIndex];
+      if (!question) {
+        nextBtn.dataset.mode = 'check';
+        nextBtn.textContent = 'Siguiente';
+        return;
+      }
+      const hasEvaluation = question ? Boolean(state.evaluations[question.id]) : false;
+
+      if (!hasEvaluation) {
+        nextBtn.dataset.mode = 'check';
+        nextBtn.textContent = 'Siguiente';
+        return;
+      }
+
+      if (state.currentIndex === questions.length - 1) {
+        nextBtn.dataset.mode = 'results';
+        nextBtn.textContent = 'Ver resultados';
+      } else {
+        nextBtn.dataset.mode = 'next';
+        nextBtn.textContent = 'Siguiente';
+      }
     }
 
     function updateResults() {
@@ -1834,9 +1957,35 @@
       return option ? option.label : value;
     }
 
-    function collectGroupTfAnswer(question) {
+    function collectCurrentAnswer(question, requireComplete = false) {
+      if (!question) return null;
+      switch (question.type) {
+        case 'single':
+        case 'tf': {
+          const selected = questionContent.querySelector(`input[name="${question.id}"]:checked`);
+          return selected ? selected.value : null;
+        }
+        case 'multi': {
+          const values = collectMultiAnswer(question.id);
+          if (requireComplete && values.length === 0) {
+            return null;
+          }
+          return values;
+        }
+        case 'group_tf': {
+          return collectGroupTfAnswer(question, requireComplete);
+        }
+        case 'match': {
+          return collectMatchAnswer(requireComplete);
+        }
+        default:
+          return null;
+      }
+    }
+
+    function collectGroupTfAnswer(question, requireComplete = true) {
       if (!question) {
-        return null;
+        return requireComplete ? null : [];
       }
       const rows = questionContent.querySelectorAll(`.group-tf-row[data-question="${question.id}"]`);
       const answer = [];
@@ -1846,11 +1995,15 @@
         const checked = row.querySelector('input:checked');
         if (!checked) {
           filled = false;
+          answer[index] = null;
           return;
         }
         answer[index] = checked.value;
       });
-      return filled ? answer : null;
+      if (requireComplete && !filled) {
+        return null;
+      }
+      return answer;
     }
 
     function updateGroupTfOptionState(container) {
@@ -1865,7 +2018,7 @@
       return Array.from(document.querySelectorAll(`input[name="${questionId}"]:checked`)).map(input => input.value);
     }
 
-    function collectMatchAnswer() {
+    function collectMatchAnswer(requireComplete = true) {
       const rows = questionContent.querySelectorAll('.match-row');
       const answer = {};
       let filled = true;
@@ -1873,21 +2026,18 @@
         const select = row.querySelector('select');
         const key = select?.dataset.left;
         if (!key) return;
-        if (!select.value) {
+        const value = select?.value || null;
+        if (!value) {
           filled = false;
         }
-        answer[key] = select.value || null;
+        answer[key] = value;
       });
-      return filled ? answer : null;
+      if (requireComplete && !filled) {
+        return null;
+      }
+      return answer;
     }
 
-    function clearMultiTimer(questionId) {
-      if (!questionId) return;
-      if (multiDelayTimers.has(questionId)) {
-        clearTimeout(multiDelayTimers.get(questionId));
-        multiDelayTimers.delete(questionId);
-      }
-    }
   </script>
 </body>
 </html>
