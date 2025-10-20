@@ -1,426 +1,512 @@
+
 const QUESTIONS = [
   {
     id: 1,
-    type: 'multi',
-    prompt: 'Seleccionar cuáles son los modos de transferencia de energía en termodinámica:',
-    options: ['Energía Potencial', 'Trabajo', 'Energía Cinética', 'Energía Interna', 'Entropía', 'Calor'],
-    correct: [1, 5],
-    explanation: 'En termodinámica, la energía se transfiere como trabajo o como calor; las demás son formas almacenadas o propiedades.'
+    type: 'single',
+    prompt: 'Indique el enunciado INCORRECTO cuando caracterizamos al hidrógeno:',
+    options: [
+      'El hidrógeno es un gas diatómico, inodoro e incoloro',
+      'Es el elemento más abundante en el planeta',
+      'En su estado puro, posee características energéticas excepcionales',
+      'Se encuentra puro en la naturaleza'
+    ],
+    correct: 1,
+    explanation:
+      'El hidrógeno no es el elemento más abundante en la Tierra; en el planeta predomina combinado en compuestos como el agua.'
   },
   {
     id: 2,
-    type: 'multi',
-    prompt: 'Seleccionar cuáles son los modos de transferencia de calor:',
-    options: ['Radiación', 'Convección', 'Evaporación', 'Fusión', 'Conducción'],
-    correct: [0, 1, 4],
-    explanation: 'Los mecanismos fundamentales de transferencia de calor son conducción, convección y radiación.'
+    type: 'single',
+    prompt: 'Obtener H₂ a partir del reformado o gasificación es posible a partir de energías…',
+    helper: 'i. renovables	 ii. nuclear	 iii. no renovables',
+    options: ['Solo iii', 'i y iii', 'ii y iii', 'Todas'],
+    correct: 1,
+    explanation:
+      'El reformado o la gasificación pueden alimentarse con fuentes renovables (biomasa) o no renovables (gas natural); no dependen directamente de energía nuclear.'
   },
   {
     id: 3,
-    type: 'tf',
-    prompt: 'Según el convenio de signos, Q > 0 cuando el calor entra al sistema.',
-    correct: true,
-    explanation: 'Por convenio clásico, Q>0 hacia el sistema y Q<0 desde el sistema.'
+    type: 'single',
+    prompt:
+      'El mayor porcentaje de hidrógeno que se produce en la actualidad es a partir de combustibles fósiles y utilizando la técnica de reformado de gas natural, por lo tanto se lo denomina:',
+    options: ['Negro', 'Gris', 'Azul', 'Verde'],
+    correct: 1,
+    explanation:
+      'El hidrógeno generado a partir de gas natural con emisiones sin capturar se clasifica como hidrógeno gris.'
   },
   {
     id: 4,
-    type: 'multi',
-    prompt: 'Ciclos utilizados solo en motores de combustión externa:',
-    options: ['Ciclo Diésel', 'Ciclo Rankine', 'Ciclo Brayton', 'Ciclo Otto'],
-    correct: [1],
-    explanation: 'El ciclo Rankine (máquinas de vapor) es de combustión externa en su configuración típica.'
+    type: 'single',
+    prompt: 'La innovación del hidrógeno azul que le permite ser considerado no perjudicial para el ambiente es:',
+    options: [
+      'Utilización de gas natural',
+      'Producción de H₂ sin producción de CO₂',
+      'Almacenamiento del CO₂ producido bajo tierra'
+    ],
+    correct: 2,
+    explanation:
+      'El hidrógeno azul incorpora captura y almacenamiento de carbono para evitar que el CO₂ llegue a la atmósfera.'
   },
   {
     id: 5,
-    type: 'match',
-    prompt: 'Emparejar cada principio con su definición:',
-    left: [
-      'Transferir calor de un cuerpo frío a uno caliente como único efecto es imposible.',
-      'No existe ciclo que convierta íntegramente el calor absorbido en trabajo.',
-      'Relación entre calor, trabajo y energía interna en un sistema.'
-    ],
-    right: [
-      'Formulación de Clausius',
-      'Enunciado de Kelvin–Planck',
-      'Principio de conservación de la energía'
-    ],
-    correct: [0, 1, 2],
-    explanation: 'Clausius prohíbe transferencia espontánea de frío a caliente; Kelvin–Planck prohíbe la conversión total de Q en W; el primero es la 1ª Ley.'
+    type: 'open',
+    prompt:
+      'Realice un esquema sintético de la formación del hidrógeno verde considerando: Materia prima – Técnica de separación – Fuente de energía – Productos (4 puntos).',
+    explanation: 'Consigna de desarrollo: describí el flujo del proceso en tus propias palabras.'
   },
   {
     id: 6,
-    type: 'multi',
-    prompt: 'Componentes principales de un motor de turbina de gas de ciclo abierto:',
-    options: ['Cámara de combustión', 'Filtro', 'Turbina', 'Compresor', 'Trampa de agua', 'Bomba'],
-    correct: [0, 2, 3],
-    explanation: 'Las tres etapas básicas: compresor, combustor, turbina.'
+    type: 'single',
+    prompt:
+      'El H₂ tiene múltiples aplicaciones pero ambientalmente hay una industria que necesita virar al hidrógeno verde para disminuir significativamente las más de 700 millones de toneladas de CO₂ que emiten al año. La industria es:',
+    options: ['Automotriz', 'Fertilizantes', 'Petroquímicos', 'Refinerías'],
+    correct: 1,
+    explanation:
+      'La producción de amoníaco para fertilizantes emite gran cantidad de CO₂ y es un foco prioritario para el hidrógeno verde.'
   },
   {
     id: 7,
     type: 'single',
-    prompt: '¿Cuál curva corresponde a un ciclo de Carnot?',
-    options: ['Dos isotermas y dos isobaras', 'Dos isobaras y dos adiabáticas', 'Dos isotermas y dos isocoras', 'Dos isotermas y dos adiabáticas'],
-    correct: 3,
-    explanation: 'Carnot se compone de dos procesos isotermos y dos adiabáticos reversibles.'
+    prompt: 'La energía nuclear es considerada como energía:',
+    options: ['Limpia', 'Muy contaminante', 'Renovable', 'De poco valor calorífico'],
+    correct: 0,
+    explanation:
+      'En términos de emisiones operativas, la energía nuclear se clasifica como una fuente de baja emisión o “limpia”.'
   },
   {
     id: 8,
-    type: 'multi',
-    prompt: 'Seleccione cuáles son etapas de diseño en ingeniería:',
-    options: [
-      'Identificar alternativas realizables',
-      'Determinar restricciones y criterios',
-      'Elegir la solución solo por menor costo',
-      'Definir objetivos del diseño',
-      'Concretar especificaciones cualitativas'
-    ],
-    correct: [0, 1, 3, 4],
-    explanation: 'Elegir solo por costo ignora criterios esenciales del diseño.'
+    type: 'open',
+    prompt: 'En el gráfico, indique cuál es la radiación alfa, beta, gamma y neutrónica.',
+    explanation: 'Identificá cada radiación a partir del esquema provisto en la evaluación impresa.'
   },
   {
     id: 9,
-    type: 'tf',
-    prompt: 'El rendimiento de un ciclo Ericsson ideal es el mismo que el de Carnot.',
-    correct: true,
-    explanation: 'Con regeneración ideal e isotermas, Ericsson alcanza la eficiencia de Carnot.'
+    type: 'single',
+    prompt: 'La fisión nuclear libera en cada reacción calor y ____________:',
+    options: [
+      'Radiación alfa + neutrones',
+      'Radiación beta + neutrones',
+      'Radiación alfa + electrones',
+      'Radiación alfa + protones'
+    ],
+    correct: 1,
+    explanation:
+      'Además de calor, la fisión libera neutrones y radiación beta/gamma provenientes de los productos de fisión.'
   },
   {
     id: 10,
-    type: 'match',
-    prompt: 'Metodología: emparejar cada paso con su definición.',
-    left: [
-      'Establecer con tus palabras lo que debe calcularse.',
-      'Listar consideraciones e idealizaciones.',
-      'Establecer brevemente lo que es conocido.',
-      'Dibujar el esquema y rotular datos.',
-      'Expresar ecuaciones y relaciones y resolver.'
-    ],
-    right: [
-      'Determinar lo que se debe hallar',
-      'Establecer consideraciones e hipótesis',
-      'Determinar lo conocido',
-      'Determinar los datos y diagramas',
-      'Realizar el análisis'
-    ],
-    correct: [0, 1, 2, 3, 4],
-    explanation: 'Corresponde al flujo clásico de resolución de problemas en ingeniería.'
+    type: 'single',
+    prompt: 'Para la reacción de fusión nuclear se necesitan como sustrato:',
+    options: ['Hidrógeno – Helio', 'Deuterio – Hidrógeno', 'Deuterio – Tritio', 'Hidrógeno – Tritio'],
+    correct: 2,
+    explanation:
+      'La fusión controlada más estudiada utiliza la mezcla de deuterio y tritio como combustibles.'
   },
   {
     id: 11,
-    type: 'match',
-    prompt: 'Ordenar los pasos (1→5).',
-    left: [
-      'Paso 5. Realizar el análisis.',
-      'Paso 4. Establecer consideraciones e hipótesis.',
-      'Paso 3. Determinar los diagramas y datos.',
-      'Paso 2. Determinar lo que se debe hallar.',
-      'Paso 1. Determinar lo conocido.'
+    type: 'single',
+    prompt: 'Durante la preparación del combustible para el reactor nuclear, el uranio se enriquece en la fase:',
+    options: [
+      'Mena de uranio (sólido)',
+      '“Yellow cake” (sólido)',
+      'Hexafluoruro de uranio (gas)',
+      'Dióxido de uranio (polvo)'
     ],
-    right: ['1', '2', '3', '4', '5'],
-    correct: [4, 3, 2, 1, 0],
-    explanation: 'Secuencia lógica del método propuesto.'
+    correct: 2,
+    explanation:
+      'El enriquecimiento isotópico se realiza sobre el hexafluoruro de uranio gaseoso, que permite métodos como difusión o centrifugación.'
   },
   {
     id: 12,
-    type: 'multi',
-    prompt: 'Ejemplos de restricción en diseño y análisis:',
-    options: ['Estándares de seguridad', 'Estética final', 'Estándares ambientales', 'Costos'],
-    correct: [0, 2, 3],
-    explanation: 'Seguridad, ambiente y costos suelen figurar como restricciones; la estética es criterio pero no siempre una restricción dura.'
+    type: 'single',
+    prompt:
+      'El agua pesada y el grafito son utilizados dentro de un reactor nuclear con diversas funciones, EXCEPTO:',
+    options: ['Moderador', 'Combustible', 'Reflector'],
+    correct: 1,
+    explanation:
+      'Actúan como moderadores o reflectores, pero ninguno cumple el rol de combustible nuclear.'
   },
   {
     id: 13,
-    type: 'tf',
-    prompt: 'Un flujo unidimensional es un flujo de materia que entra o sale de un volumen de control.',
-    correct: false,
-    explanation: '1D describe variación principal en una sola dirección; lo otro describe un sistema abierto.'
+    type: 'open',
+    prompt: 'Indique el proceso de transformación de energía que ocurre dentro de un reactor nuclear para obtener electricidad. (2 puntos)',
+    explanation: 'Describe la cadena de conversiones desde la energía nuclear hasta la energía eléctrica.'
   },
   {
     id: 14,
     type: 'single',
-    prompt: '¿En qué componente la velocidad del fluido disminuye en la dirección del flujo?',
-    options: ['Difusor', 'Compresor', 'Intercambiador de calor', 'Bomba', 'Tobera'],
-    correct: 0,
-    explanation: 'El difusor ensancha el área y reduce la velocidad aumentando la presión.'
+    prompt:
+      'En Argentina, la energía nuclear aporta un 6,5% de la matriz energética pero también tiene otros usos que pueden ser:',
+    helper: 'i. medicina	 ii. sector agropecuario	 iii. industria',
+    options: ['Ninguno', 'i y iii', 'ii y iii', 'Todos'],
+    correct: 3,
+    explanation: 'La tecnología nuclear se aplica en salud, agro y procesos industriales, además de la generación eléctrica.'
   },
   {
     id: 15,
-    type: 'tf',
-    prompt: 'Una turbomáquina donde "se produce calor" al pasar un fluido por álabes solidarios a un eje.',
-    correct: false,
-    explanation: 'La función principal es intercambio de trabajo, no producir calor como único efecto.'
+    type: 'single',
+    prompt: 'En la energía solar activa de baja temperatura, el subsistema de captación:',
+    options: [
+      'Concentra la radiación solar',
+      'Necesita la presencia de silicio',
+      'Genera un efecto invernadero sin concentración de la radiación',
+      'Eleva la temperatura entre 90 °C y 400 °C'
+    ],
+    correct: 2,
+    explanation:
+      'Los captadores planos trabajan en baja temperatura produciendo un efecto invernadero sin concentración solar.'
   },
   {
     id: 16,
-    type: 'tf',
-    prompt: 'Las variaciones de energía cinética y potencial suelen ser muy pequeñas y pueden despreciarse.',
-    correct: true,
-    explanation: 'Es una aproximación común en balances de energía de equipos.'
+    type: 'open',
+    prompt:
+      'Realice un esquema sintético de la producción de electricidad a partir de energía solar con transformación térmica de alta temperatura considerando: Etapas energéticas – Temperatura de producción – Tipos de dispositivos. (4 puntos)',
+    explanation: 'Organizá las etapas clave del aprovechamiento solar térmico de alta temperatura.'
   },
   {
     id: 17,
-    type: 'multi',
-    prompt: 'Ejemplos de compresores alternativos:',
-    options: ['Centrífugos', 'Tipo Roots', 'De biela y pistón', 'De diafragma', 'De flujo axial'],
-    correct: [2, 3],
-    explanation: 'Biela-pistón y diafragma son alternativos; centrífugos/axiales son turbocompresores; Roots es de lóbulos rotativos.'
+    type: 'single',
+    prompt:
+      'La transformación fotovoltaica está evolucionando y existen diferentes materiales. Indique cuál de las células de silicio es más eficiente en el proceso de generación de electricidad:',
+    options: ['Policristalina', 'Amorfa', 'Monocristalina'],
+    correct: 2,
+    explanation:
+      'Las células de silicio monocristalino alcanzan las mayores eficiencias comerciales dentro de la familia del silicio.'
   },
   {
     id: 18,
-    type: 'multi',
-    prompt: 'En qué componentes se realiza trabajo para modificar el estado del fluido:',
-    options: ['Bombas', 'Compresores', 'Difusores', 'Toberas', 'Turbinas'],
-    correct: [0, 1],
-    explanation: 'Bombas/compresores consumen trabajo; la turbina entrega trabajo al eje.'
+    type: 'single',
+    prompt: '¿Qué región de la Argentina es propicia para la instalación de parques solares?',
+    options: ['Noroeste', 'Patagonia', 'Litoral', 'Noreste'],
+    correct: 0,
+    explanation:
+      'El NOA posee los mayores niveles de irradiación global del país, ideales para parques solares.'
   },
   {
     id: 19,
-    type: 'tf',
-    prompt: 'Los compresores aumentan la presión por transferencia de energía en forma de calor.',
-    correct: false,
-    explanation: 'El aumento de presión se logra por trabajo mecánico sobre el fluido.'
+    type: 'single',
+    prompt: 'La DESVENTAJA de las células solares orgánicas es:',
+    options: ['Costo de producción', 'Durabilidad', 'Eficiencia de conversión', 'Impacto ambiental'],
+    correct: 1,
+    explanation:
+      'Su principal limitación actual es la baja durabilidad frente al envejecimiento y la humedad.'
   },
   {
     id: 20,
-    type: 'multi',
-    prompt: 'Aplicaciones de intercambiadores de calor:',
+    type: 'single',
+    prompt: 'El aire es una mezcla de gases que se mantiene sobre la superficie terrestre, indique el enunciado INCORRECTO:',
     options: [
-      'Cámara de combustión',
-      'Condensador de heladera',
-      'Bomba de central térmica',
-      'Compresor de heladera',
-      'Radiador de automóvil',
-      'Evaporador de un generador de vapor',
-      'Turbina de vapor'
+      'Se mantiene en la troposfera por acción de la gravedad',
+      'Cuando se calienta asciende y cuando se enfría desciende',
+      'Se expande y comprime según las leyes de los gases',
+      'Está constituido principalmente por nitrógeno'
     ],
-    correct: [1, 4, 5],
-    explanation: 'Condensadores, radiadores y generadores de vapor intercambian calor entre corrientes.'
+    correct: 0,
+    explanation:
+      'La atmósfera se extiende más allá de la troposfera; limitarla solo a esa capa resulta incorrecto.'
   },
   {
     id: 21,
-    type: 'match',
-    prompt: 'Unir cada modo con su descripción.',
-    left: [
-      'Calor entre cuerpos en contacto a distinta T.',
-      'Calor mediado por un fluido por efecto de campo de T y velocidades.',
-      'Calor por emisión/absorción de radiación electromagnética.'
-    ],
-    right: ['Conducción', 'Convección', 'Radiación'],
-    correct: [0, 1, 2],
-    explanation: 'Definiciones estándar de conducción, convección y radiación.'
+    type: 'single',
+    prompt:
+      'La ocurrencia del fenómeno del Niño está relacionada directamente a cambios en los patrones de circulación de los vientos:',
+    options: ['Polares', 'Del Oeste', 'Del Este', 'Alisios'],
+    correct: 3,
+    explanation:
+      'El Niño se asocia a un debilitamiento o inversión de los vientos alisios en el Pacífico ecuatorial.'
   },
   {
     id: 22,
-    type: 'multi',
-    prompt: 'Verdadero o falso (marca V para verdadero y F para falso).',
-    subitems: [
-      'Si un fluido es incompresible, cv = cp.',
-      'El calor específico es una propiedad extensiva.',
-      'Calor específico: calor para elevar en más de una unidad de temperatura a 1 kg.'
+    type: 'single',
+    prompt:
+      'La orografía regula la dirección e intensidad de vientos, los perfiles más beneficiosos para la instalación de aerogeneradores son:',
+    options: [
+      'Redondeados con pendientes bruscas',
+      'Pendientes bruscas con ángulos de más de 30°',
+      'Redondeados con pendientes suaves'
     ],
-    correct: [true, false, false],
-    explanation: 'Para incompresible ideal cp≈cv; el calor específico es intensivo; la definición correcta refiere a "una unidad" de temperatura.'
+    correct: 2,
+    explanation:
+      'Los perfiles suaves y redondeados reducen la turbulencia y favorecen el rendimiento eólico.'
   },
   {
     id: 23,
-    type: 'single',
-    prompt: 'En un intercambiador de placas, ¿cómo se intercambia energía entre fluidos?',
-    options: ['Conducción y convección', 'Conducción y radiación', 'Convección y radiación', 'Solo convección', 'Conducción, convección y radiación', 'Solo radiación', 'Solo conducción'],
-    correct: 0,
-    explanation: 'Convección en cada lado y conducción a través de la placa.'
+    type: 'open',
+    prompt:
+      'Realice un esquema de un aerogenerador con sus componentes (2 puntos) y las transformaciones energéticas que ocurren. (2 puntos)',
+    explanation: 'Dibujá o describí los componentes clave y cómo evoluciona la energía en el sistema eólico.'
   },
   {
     id: 24,
-    type: 'tf',
-    prompt: 'En un intercambiador, solo puede desperdiciarse la variación de energía potencial.',
-    correct: false,
-    explanation: 'También hay pérdidas por fricción, térmicas, etc.'
+    type: 'single',
+    prompt:
+      'Si necesita extraer agua de una napa en una región aislada, instalará un aerogenerador:',
+    options: ['Monopala', 'Multipala', 'Bipala', 'Tripala'],
+    correct: 1,
+    explanation:
+      'Los aerogeneradores multipala están diseñados para bombeo con vientos bajos y alta capacidad de arranque.'
   },
-  // 25–44: repetidos/variantes del mismo banco (con las mismas respuestas):
   {
     id: 25,
-    type: 'multi',
-    prompt: 'Seleccionar cuáles son los modos de transferencia de energía en termodinámica:',
-    options: ['Energía cinética', 'Trabajo', 'Energía interna', 'Entropía', 'Calor', 'Energía potencial'],
-    correct: [1, 4],
-    explanation: 'Solo trabajo y calor son modos de transferencia.'
+    type: 'match',
+    prompt:
+      'En cada enunciado indique si se hace referencia a eólica offshore o continental haciendo un análisis comparativo.',
+    left: [
+      'Mayor continuidad del recurso eólico y bajas turbulencias',
+      'Alto impacto auditivo y visual',
+      'Alta complejidad de infraestructura civil asociada',
+      'Menor eficiencia de conversión energética'
+    ],
+    right: ['Eólica offshore', 'Eólica continental'],
+    correct: [0, 1, 0, 1],
+    explanation:
+      'Offshore ofrece recurso más constante pero exige más infraestructura; onshore suele tener más impacto visual y mayor variabilidad.'
   },
   {
     id: 26,
-    type: 'multi',
-    prompt: 'Seleccionar cuáles son los modos de transferencia de calor:',
-    options: ['Convección', 'Radiación', 'Evaporación', 'Fusión', 'Conducción'],
-    correct: [0, 1, 4],
-    explanation: 'Conducción, convección y radiación.'
+    type: 'single',
+    prompt: 'Indique qué región de Argentina tiene las condiciones para establecer emprendimientos de energía eólica:',
+    options: ['Patagonia', 'NOA', 'NOE', 'Litoral'],
+    correct: 0,
+    explanation:
+      'La Patagonia dispone de vientos intensos y regulares, ideales para parques eólicos.'
   },
   {
     id: 27,
-    type: 'tf',
-    prompt: 'Según el convenio de signos, Q > 0 hacia el sistema y Q < 0 desde el sistema.',
-    correct: true,
-    explanation: 'Convención clásica.'
+    type: 'single',
+    prompt:
+      'Indique cuál es el único subsistema involucrado en transformaciones energéticas de un aerogenerador:',
+    options: ['Transmisión mecánica', 'Orientación', 'Regulación', 'Soporte'],
+    correct: 0,
+    explanation:
+      'La transmisión mecánica vincula el rotor con el generador y es donde ocurre la conversión de energía.'
   },
   {
     id: 28,
-    type: 'single',
-    prompt: 'Ciclos utilizados solo en motores de combustión externa:',
-    options: ['Ciclo Diésel', 'Ciclo Otto', 'Ciclo Rankine', 'Ciclo Brayton'],
-    correct: 2,
-    explanation: 'Rankine típico = combustión externa.'
+    type: 'open',
+    prompt:
+      'Enumere las formas de energía desde el sol hasta obtener electricidad utilizando un aerogenerador. (2 puntos)',
+    explanation: 'Detallá la secuencia de conversiones energéticas en la cadena eólica.'
   },
   {
     id: 29,
-    type: 'match',
-    prompt: 'Emparejar principios y enunciados:',
-    left: [
-      'Intercambia trabajo y calor; acumula energía interna.',
-      'Imposible transferir calor de frío a caliente como único efecto.',
-      'Imposible convertir íntegramente el calor absorbido en trabajo en un ciclo.'
-    ],
-    right: [
-      'Principio de conservación de la energía',
-      'Formulación de Clausius',
-      'Enunciado de Kelvin–Planck'
-    ],
-    correct: [0, 1, 2],
-    explanation: '1ª Ley y dos enunciados de la 2ª Ley.'
+    type: 'single',
+    prompt:
+      'El principal problema (respecto a la eficiencia) de la instalación de paneles fotovoltaicos en las grandes ciudades es:',
+    options: ['El albedo', 'El efecto sombra', 'La radiación difusa', 'La contaminación ambiental'],
+    correct: 1,
+    explanation:
+      'Los edificios y estructuras generan sombras que reducen significativamente la captación solar.'
   },
   {
     id: 30,
-    type: 'multi',
-    prompt: '¿Cuáles corresponden al 2º principio de la termodinámica?',
+    type: 'single',
+    prompt:
+      'Indique la afirmación INCORRECTA cuando caracterizamos a la brisa de mar:',
     options: [
-      'Q fluye de T alta a T baja.',
-      'Imposible transferir calor de frío a caliente como único efecto.',
-      'Conservación de la energía en sistemas.',
-      'Imposible convertir íntegramente el calor en trabajo en un ciclo.',
-      'Un sistema puede intercambiar W y Q.'
+      'Se origina durante la noche y el amanecer',
+      'Se origina durante el mediodía y la tarde',
+      'Se origina porque la tierra está más caliente que el mar',
+      'El aire frío desciende hacia la superficie del mar e ingresa hacia la tierra'
     ],
-    correct: [0, 1, 3],
-    explanation: 'Direccionalidad del calor (a), Clausius (b) y Kelvin–Planck (d).'
+    correct: 0,
+    explanation:
+      'La brisa marina se genera principalmente durante el día debido al mayor calentamiento de la tierra respecto del mar.'
   },
   {
     id: 31,
-    type: 'tf',
-    prompt: 'El enunciado de Kelvin–Planck es: "...transferir calor de un cuerpo frío a otro más caliente como único efecto".',
-    correct: false,
-    explanation: 'Ese enunciado corresponde a Clausius; Kelvin–Planck trata sobre convertir totalmente calor en trabajo.'
+    type: 'single',
+    prompt:
+      'La energía electromagnética del sol se transmite a las partículas del aire, provocando un aumento de la energía cinética que se traduce en:',
+    options: [
+      'Disminución de la temperatura de las masas de aire',
+      'Descenso de las masas de aire',
+      'Elevación de las masas de aire',
+      'Disminución de la energía gravitacional en un área determinada'
+    ],
+    correct: 2,
+    explanation:
+      'Al ganar energía cinética el aire se expande, disminuye su densidad y asciende.'
   },
   {
     id: 32,
     type: 'single',
-    prompt: 'Clasificación de un motor de explosión de automóviles:',
-    options: ['Combustión externa alternativa', 'Combustión externa rotativa', 'Combustión interna alternativa', 'Combustión interna rotativa'],
-    correct: 2,
-    explanation: 'Motor de encendido por chispa: combustión interna alternativa.'
+    prompt: 'Las circulaciones globales se desvían hacia el oeste en el hemisferio sur debido a:',
+    options: ['Fuerza de gravedad', 'Fuerza de Coriolis', 'Fuerza de atracción', 'Todas las opciones'],
+    correct: 1,
+    explanation:
+      'El efecto Coriolis, consecuencia de la rotación terrestre, desvía los vientos hacia la izquierda en el hemisferio sur.'
   },
   {
     id: 33,
-    type: 'match',
-    prompt: 'Emparejar aplicación con clasificación (considerando configuraciones típicas):',
-    left: [
-      'Turbina de gas ciclo abierto',
-      'Turbina de gas ciclo cerrado',
-      'Motor de explosión',
-      'Máquina de vapor (turbina)'
+    type: 'single',
+    prompt: 'Dentro de la góndola de un aerogenerador ocurre la transformación:',
+    options: [
+      'Energía solar a mecánica',
+      'Energía cinética a eléctrica',
+      'Energía solar a cinética',
+      'Energía mecánica a eléctrica'
     ],
-    right: [
-      'Combustión interna rotativa',
-      'Combustión externa rotativa',
-      'Combustión interna alternativa',
-      'Combustión externa alternativa'
-    ],
-    correct: [0, 1, 2, 1],
-    explanation: 'Abierto: interna rotativa. Cerrado: calentamiento externo. Motor de explosión: interna alternativa. La máquina de vapor con turbina es externa rotativa.'
+    correct: 3,
+    explanation:
+      'La góndola aloja el generador que convierte la energía mecánica del eje en energía eléctrica.'
   },
   {
     id: 34,
-    type: 'multi',
-    prompt: 'Aplicaciones del ciclo Brayton:',
-    options: ['Motor de combustión interna', 'Máquina de vapor', 'Turbina de avión', 'Turbina de vapor', 'Turbina de gas'],
-    correct: [2, 4],
-    explanation: 'Brayton rige turbinas de gas y turborreactores.'
+    type: 'single',
+    prompt:
+      'Si necesita implementar un aerogenerador en un campo para la obtención de agua, el más eficiente es:',
+    options: ['Monopala', 'Bipala', 'Multipala', 'Tripala'],
+    correct: 2,
+    explanation:
+      'Los rotores multipala entregan mayor par a bajas velocidades, adecuado para bombeo de agua.'
   },
   {
     id: 35,
     type: 'single',
-    prompt: '¿Qué ciclo puede lograr la máxima eficiencia reversible?',
-    options: ['Otto', 'Diésel', 'Rankine', 'Brayton', 'Carnot'],
-    correct: 4,
-    explanation: 'Carnot fija el límite superior reversible.'
+    prompt:
+      'La energía eólica offshore presenta ciertas ventajas sobre la eólica onshore, a saber:',
+    options: [
+      'Es una tecnología más barata',
+      'Resulta en mayor generación eléctrica por la continuidad del viento en el mar dadas las bajas turbulencias',
+      'Tiene un gran impacto visual',
+      'Ofrece menor generación eléctrica'
+    ],
+    correct: 1,
+    explanation:
+      'En el mar el viento es más estable y turbulento, lo que favorece la generación eléctrica continua.'
   },
   {
     id: 36,
-    type: 'tf',
-    prompt: 'Existen rendimientos más altos que el ciclo de Carnot.',
-    correct: false,
-    explanation: 'Ninguna máquina térmica reversible supera a Carnot entre las mismas T.'
+    type: 'single',
+    prompt:
+      'La radiación que incide sobre los objetos iluminados por el sol sin haber interactuado con nada y sin cambiar de dirección se denomina radiación…',
+    options: ['Difusa', 'Reflejada', 'Albedo', 'Directa'],
+    correct: 3,
+    explanation: 'La radiación directa llega en línea recta desde el sol sin interacciones previas.'
   },
   {
     id: 37,
     type: 'single',
-    prompt: 'Un ciclo de Carnot está compuesto por:',
+    prompt: 'Las centrales torre son subsistemas de captación de:',
     options: [
-      'Dos procesos isotermos y dos adiabáticos',
-      'Dos isocóricos y dos adiabáticos',
-      'Dos isotermos y dos isobáricos',
-      'Dos isocóricos y dos isotermos',
-      'Dos isobáricos y dos adiabáticos'
+      'Tecnologías de alta temperatura',
+      'Tecnologías de baja temperatura',
+      'Tecnologías de media temperatura',
+      'Tecnología de espejos parabólicos'
     ],
     correct: 0,
-    explanation: 'Isotermos + adiabáticos.'
+    explanation:
+      'Las centrales de torre solar concentran radiación para alcanzar altas temperaturas.'
   },
   {
     id: 38,
-    type: 'tf',
-    prompt: 'Un ciclo Ericsson reversible está formado por dos isocoras y dos isobaras.',
-    correct: false,
-    explanation: 'Ericsson ideal: compresión/expansión isotérmica y calentamiento/enfriamiento isobárico con regeneración.'
+    type: 'single',
+    prompt: 'Para la energía fotovoltaica se utilizan materiales:',
+    options: ['Conductores', 'Aislantes', 'Semiconductores', 'Ionizables'],
+    correct: 2,
+    explanation: 'Las células fotovoltaicas trabajan con materiales semiconductores como el silicio.'
   },
   {
     id: 39,
-    type: 'multi',
-    prompt: 'Restricciones en diseño y análisis de ingeniería:',
-    options: ['Costos', 'Estética final', 'Estándares de medio ambiente', 'Estándares de seguridad'],
-    correct: [0, 2, 3],
-    explanation: 'Costos, ambiente y seguridad suelen ser restricciones clave.'
+    type: 'single',
+    prompt:
+      'Si los recursos económicos no son limitantes para emprender una huerta solar ¿qué células fotovoltaicas elegiría para tener la mayor eficiencia de transformación energética?',
+    options: ['Si policristalino', 'Si monocristalino', 'Si–Te–Cd', 'Células HIT'],
+    correct: 3,
+    explanation:
+      'Las células HIT (heterounión) combinan silicio cristalino y capas delgadas alcanzando eficiencias superiores.'
   },
   {
     id: 40,
-    type: 'tf',
-    prompt: 'Un flujo unidimensional es un flujo de materia que entra o sale de un volumen de control.',
-    correct: false,
-    explanation: 'Eso describe un sistema abierto; 1D refiere a cómo varían las propiedades.'
+    type: 'single',
+    prompt: 'La tecnología solar térmica de baja temperatura NO necesita un subsistema de:',
+    options: ['Captación', 'Acumulación', 'Amplificación', 'Intercambiador'],
+    correct: 2,
+    explanation:
+      'Los sistemas de baja temperatura trabajan sin etapas de amplificación térmica.'
   },
   {
     id: 41,
     type: 'single',
-    prompt: '¿En qué componente disminuye la velocidad en la dirección del flujo?',
-    options: ['Difusor', 'Bomba', 'Compresor', 'Tobera', 'Intercambiador de calor'],
-    correct: 0,
-    explanation: 'El difusor reduce velocidad y eleva presión.'
+    prompt: 'Las centrales torre son subsistemas de captación de:',
+    options: [
+      'Tecnologías de baja temperatura',
+      'Tecnologías de media temperatura',
+      'Tecnologías de alta temperatura',
+      'Concentración cilíndrico-parabólico'
+    ],
+    correct: 2,
+    explanation:
+      'Al concentrar radiación solar en un receptor puntual, alcanzan el rango de alta temperatura.'
   },
   {
     id: 42,
-    type: 'tf',
-    prompt: 'Dispositivo donde "se produce calor" por el paso de un fluido por álabes solidarios a un eje.',
-    correct: false,
-    explanation: 'Las turbomáquinas intercambian trabajo principalmente.'
+    type: 'single',
+    prompt:
+      'Si bien en toda la Argentina tenemos alta radiación, indique en qué región es ideal la instalación de huertas solares.',
+    options: ['Patagonia', 'Noroeste', 'Litoral', 'Mesopotamia'],
+    correct: 1,
+    explanation: 'El noroeste argentino reúne las mejores condiciones de irradiación y cielo despejado.'
   },
   {
     id: 43,
     type: 'single',
-    prompt: 'Intercambio de energía en un intercambiador de placas:',
-    options: ['Solo Convección', 'Conducción, convección y radiación', 'Conducción y radiación', 'Convección y radiación', 'Solo conducción', 'Solo radiación', 'Conducción y convección'],
-    correct: 6,
-    explanation: 'Conducción a través de la placa y convección en los canales.'
+    prompt: 'La arquitectura bioclimática se fundamenta en la utilización de la energía solar…',
+    options: [
+      'De forma pasiva',
+      'De forma activa utilizando paneles solares',
+      'De forma activa utilizando paneles fotovoltaicos',
+      'De forma activa y pasiva de forma alternada'
+    ],
+    correct: 0,
+    explanation:
+      'La arquitectura bioclimática prioriza estrategias pasivas para aprovechar la energía solar.'
   },
   {
     id: 44,
-    type: 'tf',
-    prompt: 'En un intercambiador, solo se puede desperdiciar la variación de energía potencial.',
-    correct: false,
-    explanation: 'Hay múltiples pérdidas mecánicas y térmicas además de la potencial.'
+    type: 'single',
+    prompt: 'Indique qué afirmación es INCORRECTA cuando se caracteriza a la energía solar:',
+    options: [
+      'Es la energía contenida en la radiación solar',
+      'Posee un carácter inagotable',
+      'Se la asocia a grandes emisiones de gases contaminantes',
+      'Se puede transformar en energía térmica'
+    ],
+    correct: 2,
+    explanation:
+      'La energía solar es considerada limpia; no se la asocia a grandes emisiones de gases contaminantes.'
+  },
+  {
+    id: 45,
+    type: 'single',
+    prompt: 'Los elementos fundamentales de una huerta o granja solar son:',
+    options: [
+      'Transformadores y subestación',
+      'Seguidores, contadores y transformadores',
+      'Seguidores, contadores y subestación',
+      'Seguidores, contadores, transformadores y subestación',
+      'Seguidores y subestación'
+    ],
+    correct: 3,
+    explanation:
+      'Una granja solar integra seguidores, medición, transformación de tensión y conexión mediante subestación.'
+  },
+  {
+    id: 46,
+    type: 'single',
+    prompt:
+      'En el análisis estadístico del viento es habitual trabajar con funciones de densidad de probabilidad continuas. ¿Cuál es la función de densidad de probabilidad más frecuente utilizada?',
+    options: [
+      'La distribución de Weibull',
+      'La distribución de frecuencia',
+      'La distribución normal',
+      'La distribución temporal',
+      'La distribución de Rayleigh'
+    ],
+    correct: 0,
+    explanation:
+      'La distribución de Weibull modela con precisión la variabilidad de la velocidad del viento en estudios eólicos.'
   }
 ];
 
@@ -431,7 +517,8 @@ const typeLabels = {
   multi: 'Selección múltiple',
   tf: 'Verdadero / Falso',
   match: 'Emparejar',
-  group_tf: 'Verdadero / Falso (múltiple)'
+  group_tf: 'Verdadero / Falso (múltiple)',
+  open: 'Respuesta abierta'
 };
 
 const USER_STORAGE_KEY = 'thermoQuizUsers_v1';
@@ -832,12 +919,14 @@ function normalizeQuestions(rawQuestions) {
   return rawQuestions.map((raw, index) => {
     const baseId = typeof raw.id === 'number' || typeof raw.id === 'string' ? raw.id : index + 1;
     const questionId = `q${baseId}`;
+    const unscored = raw.unscored ?? raw.type === 'open';
     const base = {
       id: questionId,
       type: raw.type,
       prompt: raw.prompt ?? raw.title ?? '',
       explanation: raw.explanation ?? '',
-      helper: raw.helper ?? null
+      helper: raw.helper ?? null,
+      unscored
     };
 
     switch (raw.type) {
@@ -891,6 +980,13 @@ function normalizeQuestions(rawQuestions) {
           ...base,
           type: 'match',
           pairs: normalizeMatchPairs(raw)
+        };
+      }
+      case 'open': {
+        return {
+          ...base,
+          type: 'open',
+          unscored: true
         };
       }
       default: {
@@ -1016,7 +1112,8 @@ function cloneEvaluations(evaluations) {
     result[key] = {
       isCorrect: Boolean(value.isCorrect),
       correctAnswers,
-      explanation: value.explanation ?? ''
+      explanation: value.explanation ?? '',
+      unscored: Boolean(value.unscored)
     };
   });
   return result;
@@ -1094,7 +1191,9 @@ function renderSummary() {
     button.className = 'summary-btn';
     button.textContent = idx + 1;
     const evaluation = state.evaluations[question.id];
-    if (evaluation?.isCorrect) {
+    if (evaluation?.unscored) {
+      button.classList.add('is-unscored');
+    } else if (evaluation?.isCorrect) {
       button.classList.add('is-correct');
     } else if (evaluation && !evaluation.isCorrect) {
       button.classList.add('is-incorrect');
@@ -1143,17 +1242,45 @@ function renderQuestion() {
   `;
   questionContent.appendChild(header);
 
-  const optionsWrapper = document.createElement('div');
-  optionsWrapper.className = 'options-wrapper';
-  const role = question.type === 'single' || question.type === 'tf' ? 'radiogroup' : 'group';
-  optionsWrapper.setAttribute('role', role);
-  optionsWrapper.setAttribute('aria-labelledby', titleId);
-  if (helperId) {
-    optionsWrapper.setAttribute('aria-describedby', helperId);
-  }
-  questionContent.appendChild(optionsWrapper);
+  let optionsWrapper = null;
 
-  if (question.type === 'match') {
+  if (question.type === 'open') {
+    const openWrapper = document.createElement('div');
+    openWrapper.className = 'open-answer-wrapper';
+
+    const textarea = document.createElement('textarea');
+    textarea.className = 'open-answer-input';
+    textarea.id = `${question.id}-answer`;
+    textarea.rows = 6;
+    textarea.placeholder = 'Escribí tu respuesta aquí...';
+    if (typeof storedAnswer === 'string') {
+      textarea.value = storedAnswer;
+    }
+    if (isLocked) {
+      textarea.disabled = true;
+    }
+    textarea.dataset.question = question.id;
+    openWrapper.appendChild(textarea);
+    questionContent.appendChild(openWrapper);
+
+    if (!isLocked) {
+      textarea.addEventListener('input', () => {
+        recordAnswer(question, textarea.value);
+      });
+    }
+  } else {
+    optionsWrapper = document.createElement('div');
+    optionsWrapper.className = 'options-wrapper';
+    const role = question.type === 'single' || question.type === 'tf' ? 'radiogroup' : 'group';
+    optionsWrapper.setAttribute('role', role);
+    optionsWrapper.setAttribute('aria-labelledby', titleId);
+    if (helperId) {
+      optionsWrapper.setAttribute('aria-describedby', helperId);
+    }
+    questionContent.appendChild(optionsWrapper);
+  }
+
+  if (question.type === 'match' && optionsWrapper) {
     question.pairs.forEach(pair => {
       const row = document.createElement('div');
       row.className = 'match-row';
@@ -1262,7 +1389,7 @@ function renderQuestion() {
         row.classList.add('is-locked');
       }
     });
-  } else {
+  } else if (optionsWrapper) {
     const isMulti = question.type === 'multi';
     question.options.forEach(option => {
       const label = document.createElement('label');
@@ -1432,6 +1559,11 @@ function evaluateQuestion(question, userAnswer) {
       isCorrect = question.pairs.every(pair => provided[pair.left] === pair.correct);
       break;
     }
+    case 'open': {
+      isCorrect = true;
+      correctAnswers = [];
+      break;
+    }
     default:
       correctAnswers = [];
   }
@@ -1439,11 +1571,19 @@ function evaluateQuestion(question, userAnswer) {
   return {
     isCorrect,
     correctAnswers,
-    explanation: question.explanation
+    explanation: question.explanation,
+    unscored: question.unscored || question.type === 'open'
   };
 }
 
 function showCorrection(question, evaluation, userAnswer) {
+  if (question.type === 'open') {
+    const textarea = questionContent.querySelector(`textarea[data-question="${question.id}"]`);
+    if (textarea) {
+      textarea.disabled = true;
+    }
+    return;
+  }
   const correctAnswers = evaluation.correctAnswers;
   if (question.type === 'match') {
     const rows = questionContent.querySelectorAll('.match-row');
@@ -1538,6 +1678,21 @@ function updateFeedbackUI(question, evaluation) {
   const explanationEl = document.getElementById('explanationText');
   if (!feedbackMessage || !correctAnswerEl || !explanationEl) return;
 
+  if (question.type === 'open') {
+    if (!evaluation) {
+      feedbackMessage.textContent = 'Completá la respuesta y presioná "Siguiente" para guardarla.';
+      feedbackMessage.className = 'feedback-message';
+      correctAnswerEl.textContent = '';
+      explanationEl.textContent = question.explanation ?? '';
+    } else {
+      feedbackMessage.textContent = 'Respuesta registrada. La corrección es manual según la consigna.';
+      feedbackMessage.className = 'feedback-message info';
+      correctAnswerEl.textContent = 'Respuesta abierta: verificá tu desarrollo con el material de estudio.';
+      explanationEl.textContent = question.explanation ?? '';
+    }
+    return;
+  }
+
   if (!evaluation) {
     feedbackMessage.textContent = 'Seleccioná una respuesta y presioná "Siguiente" para corregirla.';
     feedbackMessage.className = 'feedback-message';
@@ -1613,15 +1768,18 @@ function updateNavigation() {
 
 function updateResults() {
   if (!currentUser) {
-    const total = questions.length;
+    const total = questions.filter(question => !question.unscored).length;
     scoreCountEl.textContent = `0 / ${total}`;
     scorePercentageEl.textContent = '0%';
     scoreBadgeEl.textContent = getBadgeLabel(0);
     return;
   }
-  const evaluations = Object.values(state.evaluations);
-  const correctCount = evaluations.filter(entry => entry?.isCorrect).length;
-  const total = questions.length;
+  const scoredQuestions = questions.filter(question => !question.unscored);
+  const total = scoredQuestions.length;
+  const correctCount = scoredQuestions.reduce((count, question) => {
+    const evaluation = state.evaluations[question.id];
+    return evaluation?.isCorrect ? count + 1 : count;
+  }, 0);
   const percentage = total === 0 ? 0 : Math.round((correctCount / total) * 100);
 
   scoreCountEl.textContent = `${correctCount} / ${total}`;
@@ -1636,6 +1794,9 @@ function getBadgeLabel(percentage) {
 }
 
 function formatCorrectAnswer(question, evaluation) {
+  if (question.type === 'open') {
+    return 'Respuesta abierta (evaluación manual).';
+  }
   if (question.type === 'match') {
     return evaluation.correctAnswers
       .map(item => `${item.left} → ${getMatchLabel(question, item.left, item.value)}`)
@@ -1689,6 +1850,17 @@ function collectCurrentAnswer(question, requireComplete = false) {
     }
     case 'match': {
       return collectMatchAnswer(requireComplete);
+    }
+    case 'open': {
+      const textarea = questionContent.querySelector(`textarea[data-question="${question.id}"]`);
+      if (!textarea) {
+        return requireComplete ? null : '';
+      }
+      const value = textarea.value ?? '';
+      if (requireComplete && value.trim() === '') {
+        return null;
+      }
+      return value;
     }
     default:
       return null;
